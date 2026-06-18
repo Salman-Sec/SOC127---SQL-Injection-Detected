@@ -41,7 +41,7 @@ GET /?douj=3034%20AND%201%3D1%20UNION%20ALL%20SELECT%201%2CNULL%2C%27%3Cscript%3
   > **Reasoning:** The request string contains explicit, hostile injection signatures designed to manipulate backend operations. Furthermore, threat intelligence databases flag the originating IP with a 10/91 malicious reputation score.
 * **Planned Test:** **No**
   > **Reasoning:** There are no active change windows, internal penetration testing notifications, or security simulation product naming conventions associated with the target host (`WebServer1000`).
-* **Attack Status:** ** Successful** 
+* **Attack Status:** **Not Successful** ⚠️ *(Corrected from Success)*
   > **Reasoning:** While the web server responded with an HTTP `200 OK`, this only proves the web front-end processed the connection. The **HTTP Response Size is only 865 bytes**; a successful dump of database schemas or system configuration files would result in a significantly larger payload size. Additionally, there is a fundamental technology mismatch: the automated script attempts to execute an MS-SQL Windows feature (`EXEC xp_cmdshell`) alongside a Linux command (`cat /etc/passwd`), guaranteeing a backend syntax execution failure.
-* **Tier 2 Required:** **Yes** 
+* **Tier 2 Required:** **No** ⚠️ *(Corrected from Yes)*
   > **Reasoning:** Per standard SOC playbooks and the specific escalation rules provided for this case, Tier 2 escalation is explicitly **not required** for external inbound attacks from the public Internet that fail to compromise the internal asset.

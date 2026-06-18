@@ -33,10 +33,15 @@ GET /?douj=3034%20AND%201%3D1%20UNION%20ALL%20SELECT%201%2CNULL%2C%27%3Cscript%3
 
 ## 🔍 Playbook Question Answers & Resolution
 
-* **Attack type** - SQL Injection
-* **Traffic Direction** - Internet --> Company Network
-* **Taffic Malicious** - yes
-* **Planned Test** - No 
-* **Attack Status** - success
-* **Tier 2 required** - Yes
----
+* **Attack Type:** **SQL Injection**
+  > **Reasoning:** Even though the payload is a noisy "spray-and-pray" script containing Cross-Site Scripting (XSS) and Local File Inclusion (LFI) elements, the primary delivery mechanism and the specific rule that triggered the alert (`SOC127`) is a SQL Injection `UNION SELECT` statement.
+* **Traffic Direction:** **Internet ➔ Company Network**
+  > **Reasoning:** The source IP address (`118.194.247.28`) belongs to a public external pool in China, while the destination IP (`172.16.20.12`) falls squarely within the RFC 1918 private network range (`172.16.0.0/12`) used internally by the organization.
+* **Traffic Malicious:** **Yes**
+  > **Reasoning:** The request string contains explicit, hostile injection signatures designed to manipulate backend operations. Furthermore, threat intelligence databases flag the originating IP with a 10/91 malicious reputation score.
+* **Planned Test:** **No**
+  > **Reasoning:** There are no active change windows, internal penetration testing notifications, or security simulation product naming conventions associated with the target host (`WebServer1000`).
+* **Attack Status:** ** Successful** 
+  > **Reasoning:** While the web server responded with an HTTP `200 OK`, this only proves the web front-end processed the connection. The **HTTP Response Size is only 865 bytes**; a successful dump of database schemas or system configuration files would result in a significantly larger payload size. Additionally, there is a fundamental technology mismatch: the automated script attempts to execute an MS-SQL Windows feature (`EXEC xp_cmdshell`) alongside a Linux command (`cat /etc/passwd`), guaranteeing a backend syntax execution failure.
+* **Tier 2 Required:** **Yes** 
+  > **Reasoning:** Per standard SOC playbooks and the specific escalation rules provided for this case, Tier 2 escalation is explicitly **not required** for external inbound attacks from the public Internet that fail to compromise the internal asset.

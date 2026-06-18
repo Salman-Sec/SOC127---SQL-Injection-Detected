@@ -30,29 +30,10 @@ The attacker initiated an unauthenticated `GET` request containing a heavily nes
 GET /?douj=3034%20AND%201%3D1%20UNION%20ALL%20SELECT%201%2CNULL%2C%27%3Cscript%3Ealert%28%22XSS%22%29%3C%2Fscript%3E%27%2Ctable_name%20FROM%20information_schema.tables%20WHERE%202%3E1--%2F%2A%2A%2F%3B%20EXEC%20xp_cmdshell%28%27cat%20..%2F..%2F..%2Fetc%2Fpasswd%27%29%23 HTTP/1.1
 
 ---
-
-## 🔍 Playbook Question Answers & Resolution
-
-1. **Attack Type: SQL Injection**
-
-   > **Technical Triage:** Even though the payload is a noisy "spray-and-pray" script containing Cross-Site Scripting (XSS) and Local File Inclusion (LFI) elements, the primary delivery mechanism and the specific rule that triggered the alert (`SOC127`) is a SQL Injection `UNION SELECT` statement.
-
-2. **Traffic Direction: Internet ➔ Company Network**
-
-   > **Technical Triage:** The source IP address (`118.194.247.28`) belongs to a public external pool in China, while the destination IP (`172.16.20.12`) falls squarely within the RFC 1918 private network range (`172.16.0.0/12`) used internally by the organization.
-
-3. **Traffic Malicious: Yes**
-
-   > **Technical Triage:** The request string contains explicit, hostile injection signatures designed to manipulate backend operations. Furthermore, threat intelligence databases flag the originating IP with a 10/91 malicious reputation score.
-
-4. **Planned Test: No**
-
-   > **Technical Triage:** There are no active change windows, internal penetration testing notifications, or security simulation product naming conventions associated with the target host (`WebServer1000`).
-
-5. **Attack Status: Not Successful**
-
-   > **Technical Triage:** While the web server responded with an HTTP `200 OK`, this only proves the web front-end processed the connection. The **HTTP Response Size is only 865 bytes**; a successful dump of database schemas or system configuration files would result in a significantly larger payload size. Additionally, there is a fundamental technology mismatch: the automated script attempts to execute an MS-SQL Windows feature (`EXEC xp_cmdshell`) alongside a Linux command (`cat /etc/passwd`), guaranteeing a backend syntax execution failure.
-
-6. **Tier 2 Required: No**
-
-   > **Technical Triage:** Per standard SOC playbooks and the specific escalation rules provided for this case, Tier 2 escalation is explicitly **not required** for external inbound attacks from the public Internet that fail to compromise the internal asset.
+##  🔍 Playbook Question Answers
+* **Incident ID / Event ID:** 235
+* **Alert Name:** `SOC127 - SQL Injection Detected`
+* **Alert Time:** Mar, 07, 2024, 12:51 PM
+* **Severity Level:** High (Security Analyst Review Required)
+* **Device Action:** Allowed
+.
